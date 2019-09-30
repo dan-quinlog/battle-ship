@@ -1,0 +1,57 @@
+.h1 {
+  display: flex;
+  justify-content: center;
+
+}
+.player_wrapper {
+   display: flex;
+   justify-content: center;
+}
+.input-wrapper {
+   border-style: outset;
+}
+.input-wrapper input {
+  border-style: inset;
+}
+.game-wrapper {
+   margin-top: 30px;
+   display: flex;
+   justify-content: center;
+}
+.target-board {
+   display: grid;
+   padding: 30px;
+   grid-template: repeat(10, 25px)/repeat(10, 25px);
+   background-color: black;
+   grid-gap: 5px;
+}
+
+.player-board {
+   display: grid;
+   padding: 30px;
+   grid-template: repeat(10, 25px)/repeat(10, 25px);
+   background-color: black;
+   grid-gap: 5px;
+}
+.target {
+   background-color: #373c75;
+}
+.player {
+   background-color: #961f1f;
+}
+.ship {
+   background-color: #333;
+}
+.damage {
+   
+   
+}
+.damaged-ship {
+   background-color: green;
+}
+.enemy-damaged {
+   background-color: yellow;
+}
+.enemy-ship {
+   background-color: pink;
+}
