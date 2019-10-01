@@ -22,6 +22,7 @@ var shipLocations = [];//[2,3,4,10,20,30,50,60,70,80,23,33,43,53,63,77,78];
 var damageLocations = [];//50, 21, 99, 43, 35, 49,
 var enemyShipLocations = [];//[2,3,4,10,20,30,50,60,70,80,23,33,43,53,63,77,78];
 var targetLocations = [];//3, 14, 28, 49, 69, 73, 34
+var rotateship = "v";
 
 function renderBoard(boardName) {
     var x = 0;
@@ -122,6 +123,8 @@ function saveShips(){
 		renderBoard("player");
 		document.getElementById("player-board").style.display = "none";
 		place_ship_list("");
+		document.getElementById('saveShips').style.display = "none";
+		document.getElementById('rotateship').style.display = "block";
 	}else if(document.getElementById("target-board").style.display  != "none"){
 		
 		document.querySelectorAll('.shipn').forEach(ship => {
@@ -137,6 +140,7 @@ function saveShips(){
 		renderBoard("player");
 		document.getElementById("player-board").style.display = "grid";
 		addListener();
+		document.getElementById('ship-button').style.display = "none";
 	}
 }
 function addListenerHover() {
@@ -155,12 +159,18 @@ function addListenerHover() {
 					});
 					current_ship_name = "";
 					if(document.querySelectorAll('.setShip').length < 1){
-						document.getElementById('ShipList').innerHTML = "<button onclick='saveShips()'>Save Ships</button>";
+						document.getElementById('saveShips').style.display = "block";
+						document.getElementById('rotateship').style.display = "none";
 					}
 				}
         });
     });
-	
+	document.getElementById("saveShips").addEventListener("click",function(){
+		saveShips();
+	});
+	document.getElementById("rotateship").addEventListener("click",function(){
+		rotateship = rotateship == 'v' ? "h" : "v";
+	});
     document.querySelectorAll('.target').forEach(ship => {
         ship.addEventListener('mouseover', (e) => {
             placeTargetShip(ship.id);
@@ -174,7 +184,8 @@ function addListenerHover() {
 					});
 					current_ship_name = "";
 					if(document.querySelectorAll('.setShip').length < 1){
-						document.getElementById('ShipList').innerHTML = "<button onclick='saveShips()'>Save Ships</button>";
+						document.getElementById('saveShips').style.display = "block";
+						document.getElementById('rotateship').style.display = "none";
 					}
 				}
         });
@@ -192,7 +203,7 @@ function place_ship_list(a){
 			}
 		}
 	}
-	document.getElementById('ShipList').innerHTML = ship_html;
+	document.getElementById('ship-content').innerHTML = ship_html;
 	if(ship_html){
 		let allShips_list = document.querySelectorAll('.setShip');
 		allShips_list.forEach(ship => {
@@ -212,16 +223,31 @@ function placePlayerShip(coords) {
 		document.querySelectorAll('.shipt').forEach(ship => {
 			ship.classList.remove("shipt");
 		});
-		if((x+(current_ship_to_set - 1)) <= 9){
-			
-			for(var i=x; i<=(x+(current_ship_to_set - 1)); i++){
-				if((document.querySelector('#player-'+i+'x'+y).getAttribute("class")).indexOf("shipn") > -1){
-					return false;
+		if(rotateship == "v"){
+			if((x+(current_ship_to_set - 1)) <= 9){
+				
+				for(var i=x; i<=(x+(current_ship_to_set - 1)); i++){
+					if((document.querySelector('#player-'+i+'x'+y).getAttribute("class")).indexOf("shipn") > -1){
+						return false;
+					}
+				}
+				
+				for(var i=x; i<=(x+(current_ship_to_set - 1)); i++){
+					document.querySelector('#player-'+i+'x'+y).classList.add("shipt");
 				}
 			}
-			
-			for(var i=x; i<=(x+(current_ship_to_set - 1)); i++){
-				document.querySelector('#player-'+i+'x'+y).classList.add("shipt");
+		}else{
+			if((y+(current_ship_to_set - 1)) <= 9){
+				
+				for(var i=y; i<=(y+(current_ship_to_set - 1)); i++){
+					if((document.querySelector('#player-'+x+'x'+i).getAttribute("class")).indexOf("shipn") > -1){
+						return false;
+					}
+				}
+				
+				for(var i=y; i<=(y+(current_ship_to_set - 1)); i++){
+					document.querySelector('#player-'+x+'x'+i).classList.add("shipt");
+				}
 			}
 		}
 	}
@@ -235,16 +261,31 @@ function placeTargetShip(coords) {
 		document.querySelectorAll('.shipt').forEach(ship => {
 			ship.classList.remove("shipt");
 		});
-		if((x+(current_ship_to_set - 1)) <= 9){
-			
-			for(var i=x; i<=(x+(current_ship_to_set - 1)); i++){
-				if((document.querySelector('#target-'+i+'x'+y).getAttribute("class")).indexOf("shipn") > -1){
-					return false;
+		if(rotateship == "v"){
+			if((x+(current_ship_to_set - 1)) <= 9){
+				
+				for(var i=x; i<=(x+(current_ship_to_set - 1)); i++){
+					if((document.querySelector('#target-'+i+'x'+y).getAttribute("class")).indexOf("shipn") > -1){
+						return false;
+					}
+				}
+				
+				for(var i=x; i<=(x+(current_ship_to_set - 1)); i++){
+					document.querySelector('#target-'+i+'x'+y).classList.add("shipt");
 				}
 			}
-			
-			for(var i=x; i<=(x+(current_ship_to_set - 1)); i++){
-				document.querySelector('#target-'+i+'x'+y).classList.add("shipt");
+		}else{
+			if((y+(current_ship_to_set - 1)) <= 9){
+				
+				for(var i=y; i<=(y+(current_ship_to_set - 1)); i++){
+					if((document.querySelector('#target-'+x+'x'+i).getAttribute("class")).indexOf("shipn") > -1){
+						return false;
+					}
+				}
+				
+				for(var i=y; i<=(y+(current_ship_to_set - 1)); i++){
+					document.querySelector('#target-'+x+'x'+i).classList.add("shipt");
+				}
 			}
 		}
 	}
