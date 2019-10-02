@@ -14,17 +14,41 @@ const targetBoard = document.querySelector('.target-board');
 const playerBoard = document.querySelector('.player-board');
 
 var placeShip = false;
-var setPlayer = 1;
+let activePlayer = 1;
+let player1, player2;
 var set_ships = [],current_ship_to_set = 0,current_ship_name="";
 // CURRENT TURN PLAYER VARIABLES
 var selected_List = [];
-var shipLocations = [];//[2,3,4,10,20,30,50,60,70,80,23,33,43,53,63,77,78];
-var damageLocations = [];//50, 21, 99, 43, 35, 49,
-var enemyShipLocations = [];//[2,3,4,10,20,30,50,60,70,80,23,33,43,53,63,77,78];
-var targetLocations = [];//3, 14, 28, 49, 69, 73, 34
+// var shipLocations = [];//[2,3,4,10,20,30,50,60,70,80,23,33,43,53,63,77,78];
+// var damageLocations = [];//50, 21, 99, 43, 35, 49,
+// var enemyShipLocations = [];//[2,3,4,10,20,30,50,60,70,80,23,33,43,53,63,77,78];
+// var targetLocations = [];//3, 14, 28, 49, 69, 73, 34
 var rotateship = "v";
 
-function renderBoard(boardName) {
+class Player {
+	constructor(name = 'ai') {
+		this.name = name;
+		this.shipLocations = [];
+		this.targetLocations = [];
+	}
+	pushShipLocations(el) {
+		this.shipLocations.push(el);
+	}
+	getShipLocations() {
+		return this.shipLocations;
+	}
+	includesShipLocations(el) {
+		return this.shipLocations.includes(el);
+	}
+	pushTargetLocations(el) {
+		this.targetLocations.push(el);
+	}
+	includesTargetLocations(el) {
+		return this.targetLocations.includes(el)
+	}
+}
+
+function renderBoard(boardName) {//probably need to include active player in args
     var x = 0;
     const boardToRender = boardName === "target" ? targetBoard : playerBoard;
     while (boardToRender.firstChild) {
@@ -39,48 +63,42 @@ function renderBoard(boardName) {
             newSquare.classList.add(boardName);
             newSquare.setAttribute("data-position",nthChild);
             boardToRender.appendChild(newSquare);
-            if (placeShip) {
-                // DAN'S CODE GOES HERE
-            } else {
-                // Iterate over board and apply markers to current player squares
-                if (boardName === "player") {
-					if (shipLocations.includes(nthChild)) {
-						// alert("Found you at" + nthChild + " in " + shipLoc);
-						newSquare.classList.add("ship");
+		
+			// Iterate over board and apply markers to current player squares
+			if (boardName === "player") {
+				if (player1.includesShipLocations(nthChild)) {
+					// alert("Found you at" + nthChild + " in " + shipLoc);
+					newSquare.classList.add("ship");
+				}
+				if (player2.includesTargetLocations(nthChild)) {
+					if(newSquare.classList.contains("ship")) {
+						newSquare.classList.add("damaged-ship");
+					} else {
+						newSquare.classList.add("damage");
 					}
-                    if (damageLocations.includes(nthChild)) {
-                        if(newSquare.classList.contains("ship")) {
-                            newSquare.classList.add("damaged-ship");
-                        } else {
-                            newSquare.classList.add("damage");
-                        }
-                    }
-                } else {
-                    // Iterate over board and apply markets and event listeners to enemy player squares
-                    if (enemyShipLocations.includes(nthChild)) {
-						// alert("Found you at" + nthChild + " in " + shipLoc);
-						newSquare.classList.add("enemyLoc");
+				}
+			} else {
+				// Iterate over board and apply markets and event listeners to enemy player squares
+				if (player2.includesShipLocations(nthChild)) {
+					// alert("Found you at" + nthChild + " in " + shipLoc);
+					newSquare.classList.add("enemyLoc");
+				}
+				if (player1.includesTargetLocations(nthChild)) {
+					if(newSquare.classList.contains("enemyLoc")) {
+						newSquare.classList.add("enemy-ship");
+					} else {
+						newSquare.classList.add("enemy-damaged");
 					}
-                    if (targetLocations.includes(nthChild)) {
-                        if(newSquare.classList.contains("enemyLoc")) {
-                            newSquare.classList.add("enemy-ship");
-                        } else {
-                            newSquare.classList.add("enemy-damaged");
-                        }
-                    }
-                }
-            }
+				}
+			}
             nthChild++;
-            y++;
+			y++;
         }
         x++;
     }
 
 }
 
-// CALL ANYTIME BOARD MUST CHANGE
-renderBoard("target");
-renderBoard("player");
 
 function getSquareXY(squareID) {
     // Parse span ID; returns an array of two coordinates: [x,y]
@@ -113,7 +131,7 @@ function saveShips(){
 	if(document.getElementById("player-board").style.display  != "none"){
 		
 		document.querySelectorAll('.shipn').forEach(ship => {
-			shipLocations.push(parseInt(ship.getAttribute("data-position")));
+			player1.pushShipLocations(parseInt(ship.getAttribute("data-position")));
 			ship.classList.remove("shipn");
 		});
 		current_ship_to_set = 0;
@@ -128,7 +146,7 @@ function saveShips(){
 	}else if(document.getElementById("target-board").style.display  != "none"){
 		
 		document.querySelectorAll('.shipn').forEach(ship => {
-			enemyShipLocations.push(parseInt(ship.getAttribute("data-position")));
+			player2.pushShipLocations(parseInt(ship.getAttribute("data-position")));
 			ship.classList.remove("shipn");
 		});
 		place_ship_list("");
@@ -213,8 +231,6 @@ function place_ship_list(a){
 		});
 	}
 }
-addListenerHover();
-place_ship_list("");
 function placePlayerShip(coords) {
     if(current_ship_to_set > 0){
 		var n=0,ship_key = "";
@@ -299,11 +315,11 @@ function shiptHit(coords) {
 	const y = Number(coords.charAt(coords.length-1));
 	
 	const origin = document.querySelector('#player-'+x+'x'+y);
-		if (damageLocations.includes(parseInt(origin.getAttribute("data-position")))){
+		if (player2.includesTargetLocations(parseInt(origin.getAttribute("data-position")))){
 			alert('You cant hit the same place twice');
 			return false;
 		}
-		damageLocations.push(parseInt(origin.getAttribute("data-position")));
+		player2.pushTargetLocations(parseInt(origin.getAttribute("data-position")));
 		placeShip = false;
 		renderBoard('player');
 		renderBoard('target');
@@ -316,11 +332,11 @@ function targetHit(coords) {
 	const x = Number(coords.charAt(coords.length-3));
 	const y = Number(coords.charAt(coords.length-1));
 	const origin2 = document.querySelector('#target-'+x+'x'+y);
-		if (targetLocations.includes(parseInt(origin2.getAttribute("data-position")))){
+		if (player1.includesTargetLocations(parseInt(origin2.getAttribute("data-position")))){
 			alert('You cant hit the same place twice');
 			return false;
 		}
-		targetLocations.push(parseInt(origin2.getAttribute("data-position")));
+		player1.pushTargetLocations(parseInt(origin2.getAttribute("data-position")));
 		placeShip = false;
 		
 		renderBoard('player');
@@ -328,7 +344,21 @@ function targetHit(coords) {
 		addListener();
 
 }
-document.getElementById('start-game').addEventListener('click', (e) => {
-	document.getElementById('start-game').style.display = "none";
-	addListener();
+
+function gameShipPlacement() {
+	player1 = new Player('dan');
+	player2 = new Player('iel');
+	document.getElementById('start-game').classList.add('removed');
+	document.getElementById('game-wrapper').classList.remove('removed');
+	renderBoard("target");//game start
+	renderBoard("player");//game start
+	addListenerHover();//game start
+	place_ship_list("");//game start
+	
+}
+
+
+document.getElementById('start-game').addEventListener('click', (e) => {//game start
+
+	gameShipPlacement()
 });
