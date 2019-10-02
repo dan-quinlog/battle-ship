@@ -4,15 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Battle Ship</title>
     <style>
         h1 {
-            
+            text-align: center;
         }
         .game-wrapper {
             margin-top: 30px;
             display: flex;
+            flex-direction: column;
             justify-content: center;
+        }
+        .whole-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
         .target-board {
             display: grid;
@@ -37,16 +43,19 @@
 			margin: 0 20px;
         }
         .target {
-            background-color: #373c75;
-        }
-        .player {
             background-color: #961f1f;
         }
-        .ship {
-            /*background-color: #333;*/
+        .player {
+            background-color: #373c75;
         }
-        .shipt,.shipn {
+        .ship {
+            background-color: #737188;
+        }
+        .shipt {
             background-color: #333;
+        }
+        .shipn {
+            background-color: #737188;
         }
         .damage {
             background-color: red;
@@ -61,18 +70,18 @@
             background-color: pink;
         }
 		.target:hover{
-			background-color: #373c75cf !important;
+			background-color: #961f1fbf !important;
 			cursor:pointer;
 		}
 		.player:hover{
-			background-color: #961f1fbf; !important;
+			background-color: #373c75cf !important;
 			cursor:pointer;
 		}
 		#start-game{
-			display:none;
+			/* display:none; */
 		}
 		.target-board{
-			display:none;
+			/* display:none; */
 		}
 		#ShipList {
 			background-color:#fff;
@@ -88,32 +97,39 @@
 			background-color:#ddd;
 		}
 		#saveShips{
-			display:none;
+			/* display:none; */
 		}
+        .game-title {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .removed {
+            display: none;
+        }
     </style>
     <!--url for picture for hit boxes is "https://images.cdn3.stockunlimited.net/preview1300/isometric-explosion_1608493.jpg"-->
 </head>
 <body style="background-image: url(http://getwallpapers.com/wallpaper/full/8/3/2/96862.jpg)">
-    <h1>Battle Ship</h1>
-	<div class="game-wrapper">
-       <button id='start-game'>Start Game</button>
-    </div>
-    <div class="game-wrapper">
-        
-        <div id="ShipList">
-			<div id='ship-content'></div>
-			<div id='ship-button'>
-				<button id='rotateship'>Rotate Ship</button>
-				<button id='saveShips'>Save Ships</button>
-			</div>
-        </div>
-		<div id="target-board" class="target-board">
-            <span id="server-chat-box" style="color: red"></span>     
-        </div>
-        <div id="player-board" class="player-board">
+    <div class="whole-wrapper">
+        <div class="game-title">
+            <h1>Battle Ship</h1>
+            <button id='start-game'>Start Game</button>
+        </div>        
+        <div class="game-wrapper removed" id="game-wrapper">
+            <div id="target-board" class="target-board removed">
+                <span id="server-chat-box" style="color: red"></span>     
+            </div>
+            <div id="player-board" class="player-board">
+            </div>
+            <div id="ShipList">
+                <div id='ship-content'></div>
+                <div id='ship-button'>
+                </div>
+            </div>
         </div>
     </div>
 </body>
 
-<script type="text/javascript" src="gamebourd.js"></script>
+<script type="text/javascript" src="gameboard.js"></script>
 </html>
