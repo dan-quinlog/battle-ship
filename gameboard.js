@@ -44,6 +44,14 @@ class Player {
 	}
 }
 
+function wipeBoard(){
+	const remove_tiles = document.querySelectorAll('.player, .target');
+	console.log(remove_tiles);
+	for (i = 0 ; i < remove_tiles.length ; i++) {
+		remove_tiles[i].remove();
+	}
+}
+
 function renderBoard(boardName, activePlayer = player1, passivePlayer = player2) {
 	const playerBoard = document.getElementById('player-board');
 	const targetBoard = document.getElementById('target-board');
@@ -82,19 +90,19 @@ function renderBoard(boardName, activePlayer = player1, passivePlayer = player2)
 							newSquare.classList.add("damage");
 						}
 					}
-				// } else {
-				// 	// Iterate over board and apply markets and event listeners to enemy player squares
-				// 	if (passivePlayer.includesShipLocations(nthChild)) {
-				// 		// alert("Found you at" + nthChild + " in " + shipLoc);
-				// 		newSquare.classList.add("enemyLoc");
-				// 	}
-				// 	if (activePlayer.includesTargetLocations(nthChild)) {
-				// 		if(newSquare.classList.contains("enemyLoc")) {
-				// 			newSquare.classList.add("enemy-ship");
-				// 		} else {
-				// 			newSquare.classList.add("enemy-damaged");
-				// 		}
-				// 	}
+				} else {
+					// Iterate over board and apply markets and event listeners to enemy player squares
+					if (passivePlayer.includesShipLocations(nthChild)) {
+						// alert("Found you at" + nthChild + " in " + shipLoc);
+						newSquare.classList.add("enemyLoc");
+					}
+					if (activePlayer.includesTargetLocations(nthChild)) {
+						if(newSquare.classList.contains("enemyLoc")) {
+							newSquare.classList.add("enemy-ship");
+						} else {
+							newSquare.classList.add("enemy-damaged");
+						}
+					}
 				}
 				nthChild++;
 				y++;
@@ -107,9 +115,9 @@ function renderBoard(boardName, activePlayer = player1, passivePlayer = player2)
 
 function getSquareXY(squareID) {
     // Parse span ID; returns an array of two coordinates: [x,y]
-    let coordinateString = squareID.substring(squareID.indexOf("-") + 1);
-    var coordinateArray = coordinateString.split("x");
-    return coordinateArray;
+	let coordinateString = squareID.substring(squareID.indexOf("-") + 1);
+	let coordinate = coordinateString.replace("x", "");
+    return coordinate; 
 }
 
 function getTargetSquareByPos(x, y) {
@@ -119,13 +127,16 @@ function getTargetSquareByPos(x, y) {
 }
 
 function addListener(activePlayer, passivePlayer) {
-    let allShips2 = document.querySelectorAll('.target');
-    allShips2.forEach(ship => {
-        ship.addEventListener('click', (e) => {
-            targetHit(ship.id, activePlayer, passivePlayer);
-        });
+	let allTargets = document.querySelectorAll('.target');
+    allTargets.forEach(target => {
+		if (!activePlayer.includesTargetLocations(parseInt(getSquareXY(target.id)))) {
+			target.addEventListener('click', (e) => {
+				targetHit(target.id, activePlayer, passivePlayer);
+			});
+		}
     });
 }
+
 function saveShips(activePlayer, playerNumber){
 	document.querySelectorAll('.shipn').forEach(ship => {
 		activePlayer.pushShipLocations(parseInt(ship.getAttribute("data-position")));
@@ -136,7 +147,6 @@ function saveShips(activePlayer, playerNumber){
 	current_ship_name = "";
 	document.getElementById('saveShips').remove();
 	document.getElementById('rotateship').remove();
-	debugger;
 	if (playerNumber == 1){
 		player2ShipPlacement();
 	} else {
@@ -284,21 +294,17 @@ function placeTargetShip(coords) {
 	
 }
 
-function targetHit(coords, activePlayer, passivePlayer) {//////////////////////////////This needs to be fixed, is the attack function.
-    
-	var n=0,ship_key = "";
-	
+function targetHit(coords, activePlayer, passivePlayer) {
 	const x = Number(coords.charAt(coords.length-3));
 	const y = Number(coords.charAt(coords.length-1));
 	const origin2 = document.querySelector('#target-'+x+'x'+y);
-		if (player1.includesTargetLocations(parseInt(origin2.getAttribute("data-position")))){
-			alert('You cant hit the same place twice');
-			return false;
-		}
-		player1.pushTargetLocations(parseInt(origin2.getAttribute("data-position")));
-		
-		renderBoard('game', activePlayer, passivePlayer);
-		addListener();
+	activePlayer.pushTargetLocations(parseInt(origin2.getAttribute("data-position")));
+	renderBoard('game', activePlayer, passivePlayer);
+	addListener(activePlayer, passivePlayer);
+	setTimeout(function() {
+		alert(`You ${passivePlayer.includesShipLocations(parseInt(origin2.getAttribute("data-position"))) ? 'hit' : 'missed'} the opponent`);
+		nextTurn(activePlayer, passivePlayer);
+	});
 
 }
 
@@ -315,15 +321,28 @@ function gameShipPlacement() {
 function player2ShipPlacement() {
 	renderBoard("player", player2, player1);
 	place_ship_list('');
-	debugger;
 	placeShips(player2, 2);
 }
 
 function gameStart() {
-	alert('player 1 turn');
-	document.getElementById('target-board').classList.remove('removed');
-	renderBoard("game", player1, player2);
-	addListener(player1, player2);
+	wipeBoard();
+	setTimeout(function() {
+		alert(`${player1.name} turn, click okay to continue`);
+		document.getElementById('target-board').classList.remove('removed');
+		renderBoard("game", player1, player2);
+		addListener(player1, player2);
+
+	}, 500);
+}
+
+function nextTurn(activePlayer, passivePlayer) {
+	[activePlayer, passivePlayer] = [passivePlayer, activePlayer];
+	wipeBoard();
+	setTimeout(function() {
+		alert(`${activePlayer.name} turn, click okay to continue`)
+		renderBoard("game", activePlayer, passivePlayer);
+		addListener(activePlayer, passivePlayer);
+	}, 500);
 }
 
 
