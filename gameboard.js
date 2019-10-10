@@ -46,7 +46,6 @@ class Player {
 
 function wipeBoard(){
 	const remove_tiles = document.querySelectorAll('.player, .target');
-	console.log(remove_tiles);
 	for (i = 0 ; i < remove_tiles.length ; i++) {
 		remove_tiles[i].remove();
 	}
@@ -301,11 +300,14 @@ function targetHit(coords, activePlayer, passivePlayer) {
 	activePlayer.pushTargetLocations(parseInt(origin2.getAttribute("data-position")));
 	renderBoard('game', activePlayer, passivePlayer);
 	addListener(activePlayer, passivePlayer);
+	if ( winCondition(activePlayer, passivePlayer)) {
+		alert(`Congrats ${activePlayer.name} you won!`);
+	} else {
 	setTimeout(function() {
 		alert(`You ${passivePlayer.includesShipLocations(parseInt(origin2.getAttribute("data-position"))) ? 'hit' : 'missed'} the opponent`);
 		nextTurn(activePlayer, passivePlayer);
 	});
-
+	}
 }
 
 function gameShipPlacement() {
@@ -345,6 +347,20 @@ function nextTurn(activePlayer, passivePlayer) {
 	}, 500);
 }
 
+function winCondition(activePlayer, passivePlayer) {
+	let gamewon = true;
+	const targetShips = passivePlayer.getShipLocations();
+	targetShips.forEach(ship => {
+		if (!activePlayer.includesTargetLocations(ship)) {
+			gamewon = false;
+		}
+	});
+	return gamewon;
+}
+
+function winGame(activePlayer, passivePlayer) {
+	activePlayer.targetLocations = passivePlayer.shipLocations;
+}
 
 document.getElementById('start-game').addEventListener('click', (e) => {//game start
 	gameShipPlacement()
