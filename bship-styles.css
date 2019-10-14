@@ -1,0 +1,130 @@
+/* page structure styles */
+.whole-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.game-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 50px;
+  font-size: 2em;
+}
+.game-menu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 1.2em;
+  font-weight: 600;
+}
+.game-menu .name-inputs-wrapper {
+  padding: 30px;
+  display: grid;
+  grid-template: 1fr 1fr / 1fr 1fr;
+  grid-gap: 30px;
+}
+.game-menu .name-inputs-wrapper .player-name {
+  border-radius: 5px;
+  padding: 10px;
+  text-align: center;
+}
+.start-game {
+  font-size: 1.5em;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  background: linear-gradient(5deg, rgba(50,91,255,1) 0%, rgba(255,0,46,1) 70%);
+  opacity: 0.75;
+}
+#start-game {
+}
+.game-wrapper {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+#player-name-board {
+  height: 20px;
+}
+.target-board {
+  display: grid;
+  padding: 30px;
+  grid-template: repeat(10, 25px) / repeat(10, 25px);
+  background-color: black;
+  grid-gap: 5px;
+}
+.player-board {
+  display: grid;
+  padding: 30px;
+  grid-template: repeat(10, 25px) / repeat(10, 25px);
+  background-color: black;
+  grid-gap: 5px;
+}
+.player-info {
+  padding: 5px;
+  padding: 5px;
+  grid-template: repeat(10, 25px) / repeat(10, 25px);
+  grid-gap: 5px;
+  text-align: center;
+  margin: 0 20px;
+}
+/* gameboard special styles */
+.removed {
+  display: none;
+}
+h1 {
+  text-align: center;
+}
+.target {
+  background-color: #961f1f;
+}
+.player {
+  background-color: #373c75;
+}
+.ship {
+  background-color: #737188;
+}
+.shipt {
+  background-color: #333;
+}
+.shipn {
+  background-color: #737188;
+}
+.damage {
+  background-color: red;
+}
+.damaged-ship {
+  background-color: green;
+}
+.enemy-damaged {
+  background-color: yellow;
+}
+.enemy-ship {
+  background-color: pink;
+}
+.target:hover {
+  background-color: #961f1fbf !important;
+  cursor: pointer;
+}
+.player:hover {
+  background-color: #373c75cf !important;
+  cursor: pointer;
+}
+#ShipList {
+  background-color: #fff;
+}
+#ShipList #ship-content div {
+  padding: 10px;
+  cursor: pointer;
+}
+#ShipList #ship-button {
+  padding: 10px;
+}
+#ShipList #ship-content div:hover {
+  background-color: #ddd;
+}
+#saveShips {
+  /* display:none; */
+}
