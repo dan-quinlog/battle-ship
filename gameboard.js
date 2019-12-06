@@ -51,8 +51,9 @@ function renderBoard(boardName, activePlayer, passivePlayer) {
   if (boardName == "player") {
     render(playerBoard);
   } else {
-    render(playerBoard);
+    // render(playerBoard);
     render(targetBoard);
+    document.getElementById('player-board').classList.add('removed');
   }
   function render(boardToRender) {
     const board = boardToRender.classList.contains("player-board")
@@ -134,11 +135,14 @@ function addListener(activePlayer, passivePlayer) {
 }
 
 function place_ship_step(activePlayer, passivePlayer) {
-	renderBoard("player", activePlayer, passivePlayer);
-	place_ship_list("");
+  renderBoard("player", activePlayer, passivePlayer);
+  place_ship_list("");
   document.getElementById(
     "player-name-board"
   ).innerText = `${activePlayer.name} click here to begin placing ships`;
+  document
+    .getElementById("player-name-board")
+    .classList.add("player-name-board");
   document.getElementById("player-name-board").addEventListener("click", e => {
     const name_board = document.getElementById("player-name-board");
     document.getElementById("game-wrapper").removeChild(name_board);
@@ -204,13 +208,13 @@ function saveShips(activePlayer, passivePlayer) {
   set_ships = [];
   current_ship_name = "";
   document.getElementById("saveShips").remove();
-	document.getElementById("rotateship").remove();
-	const place_more_ships = passivePlayer.getShipLocations();
+  document.getElementById("rotateship").remove();
+  const place_more_ships = passivePlayer.getShipLocations();
   if (place_more_ships.length > 0) {
     gameStart();
   } else {
-		place_ship_step(passivePlayer, activePlayer);
-	}
+    place_ship_step(passivePlayer, activePlayer);
+  }
 }
 function place_ship_list(a) {
   var ship_html = "";
@@ -352,42 +356,105 @@ function targetHit(coords, activePlayer, passivePlayer) {
   renderBoard("game", activePlayer, passivePlayer);
   addListener(activePlayer, passivePlayer);
   if (winCondition(activePlayer, passivePlayer)) {
-		alert(`Congrats ${activePlayer.name} you won!`);
-		restartGame();
+    document.getElementById(
+      "player-name-board"
+    ).innerText = `Congrats ${activePlayer.name} you won!`;
+    document
+      .getElementById("player-name-board")
+      .classList.add("player-name-board");
+    document
+      .getElementById("player-name-board")
+      .addEventListener("click", e => {
+        const name_board = document.getElementById("player-name-board");
+        document.getElementById("game-wrapper").removeChild(name_board);
+        const new_board = document.createElement("div");
+        new_board.id = "player-name-board";
+        document
+          .getElementById("game-wrapper")
+          .insertBefore(
+            new_board,
+            document.getElementById("game-wrapper").firstChild
+          );
+        restartGame();
+      });
   } else {
-    setTimeout(function() {
-      alert(
-        `You ${
-          passivePlayer.includesShipLocations(
-            parseInt(origin2.getAttribute("data-position"))
-          )
-            ? "hit"
-            : "missed"
-        } the opponent`
-      );
-      nextTurn(activePlayer, passivePlayer);
-    });
+    document.getElementById("player-name-board").innerText = `You ${
+      passivePlayer.includesShipLocations(
+        parseInt(origin2.getAttribute("data-position"))
+      )
+        ? "hit"
+        : "missed"
+    } the opponent`;
+    document
+      .getElementById("player-name-board")
+      .classList.add("player-name-board");
+    document
+      .getElementById("player-name-board")
+      .addEventListener("click", e => {
+        const name_board = document.getElementById("player-name-board");
+        document.getElementById("game-wrapper").removeChild(name_board);
+        const new_board = document.createElement("div");
+        new_board.id = "player-name-board";
+        document
+          .getElementById("game-wrapper")
+          .insertBefore(
+            new_board,
+            document.getElementById("game-wrapper").firstChild
+          );
+        nextTurn(activePlayer, passivePlayer);
+      });
   }
 }
 
 function gameStart() {
   wipeBoard();
-  setTimeout(function() {
-    alert(`${player1.name} turn, click okay to continue`);
+  document.getElementById(
+    "player-name-board"
+  ).innerText = `${player1.name} turn, click okay to continue`;
+  document
+    .getElementById("player-name-board")
+    .classList.add("player-name-board");
+  document.getElementById("player-name-board").addEventListener("click", e => {
+    const name_board = document.getElementById("player-name-board");
+    document.getElementById("game-wrapper").removeChild(name_board);
+    const new_board = document.createElement("div");
+    new_board.id = "player-name-board";
+    document
+      .getElementById("game-wrapper")
+      .insertBefore(
+        new_board,
+        document.getElementById("game-wrapper").firstChild
+      );
     document.getElementById("target-board").classList.remove("removed");
     renderBoard("game", player1, player2);
     addListener(player1, player2);
-  }, 500);
+  });
 }
 
 function nextTurn(activePlayer, passivePlayer) {
   [activePlayer, passivePlayer] = [passivePlayer, activePlayer];
   wipeBoard();
-  setTimeout(function() {
-    alert(`${activePlayer.name} turn, click okay to continue`);
+
+  document.getElementById(
+    "player-name-board"
+  ).innerText = `${activePlayer.name} turn, click okay to continue`;
+  document
+    .getElementById("player-name-board")
+    .classList.add("player-name-board");
+  document.getElementById("player-name-board").addEventListener("click", e => {
+    const name_board = document.getElementById("player-name-board");
+    document.getElementById("game-wrapper").removeChild(name_board);
+    const new_board = document.createElement("div");
+    new_board.id = "player-name-board";
+    document
+      .getElementById("game-wrapper")
+      .insertBefore(
+        new_board,
+        document.getElementById("game-wrapper").firstChild
+      );
     renderBoard("game", activePlayer, passivePlayer);
     addListener(activePlayer, passivePlayer);
-  }, 500);
+  });
 }
 
 function winCondition(activePlayer, passivePlayer) {
@@ -438,12 +505,5 @@ function startGamePlaceShips(activePlayer, passivePlayer) {
 }
 
 function restartGame() {
-  if (document.getElementById("game-menu").classList.contains("removed")) {
-    document.getElementById("game-menu").classList.remove("removed");
-  }
-  if (!document.getElementById("game-wrapper").classList.contains("removed")) {
-    document.getElementById("game-wrapper").classList.add("removed");
-  }
-  document.getElementById("player1name").value = "";
-  document.getElementById("player2name").value = "";
+  document.location.reload()
 }

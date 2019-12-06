@@ -46,7 +46,21 @@
   justify-content: center;
 }
 #player-name-board {
+}
+.player-name-board {
   height: 20px;
+  padding: 10px;
+  background-color: red;
+  opacity: 75%;
+  border-radius: 5px;
+  margin: 10px;
+  text-transform: capitalize;
+  font-weight: 600;
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  cursor: pointer;
 }
 .target-board {
   display: grid;
